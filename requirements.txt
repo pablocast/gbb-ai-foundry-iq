@@ -1,0 +1,6 @@
+azure-search-documents==11.7.0b2 
+azure-ai-projects==2.1.0
+azure-identity==1.25.3
+ipykernel==6.29.5
+jupyterlab==4.4.1
+python-dotenv==1.2.2

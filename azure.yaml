@@ -1,0 +1,24 @@
+name: gbb-ai-foundry-iq
+metadata:
+  template: gbb-ai-foundry-iq
+infra:
+  provider: bicep
+  path: infra
+hooks:
+  postprovision:
+    windows:
+      shell: pwsh
+      run: |
+        echo "Generating local environment variables..."
+        ./infra/scripts/generate_local_env.ps1
+        echo "Loading example queries into Azure Cognitive Search..."
+        ./.venv/Scripts/python ./scripts/load_csv_to_search.py --csv-file example_queries.csv
+      interactive: false
+    posix:
+      shell: sh
+      run: |
+        echo "Generating local environment variables..."
+        bash ./infra/scripts/generate_local_env.sh
+        echo "Loading example queries into Azure Cognitive Search..."
+        ./.venv/bin/python ./scripts/load_csv_to_search.py --csv-file example_queries.csv
+      interactive: false

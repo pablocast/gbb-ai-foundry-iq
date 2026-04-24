@@ -1,0 +1,12 @@
+SEARCH_ENDPOINT=https://<your-search-service>.search.windows.net
+AOAI_ENDPOINT=https://<your-openai-resource>.openai.azure.com
+AOAI_EMBEDDING_MODEL=text-embedding-3-large
+AOAI_EMBEDDING_DEPLOYMENT=text-embedding-3-large
+AOAI_GPT_MODEL=gpt-5.4
+AOAI_GPT_DEPLOYMENT=gpt-4o-mini
+FOUNDRY_PROJECT_ENDPOINT=https://<your-ai-services>.services.ai.azure.com/api/projects/<your-project>
+FOUNDRY_PROJECT_RESOURCE_ID=/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.CognitiveServices/accounts/<your-ai-services>/projects/<your-project>
+AOAI_AGENTIC_GPT_MODEL=gpt-4.1
+AOAI_AGENTIC_GPT_DEPLOYMENT=agentic-chat
+USER_ASSIGNED_IDENTITY_RESOURCE_ID=/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<identity-name>
+STORAGE_RESOURCE_ID=ResourceId=/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Storage/storageAccounts/<storage-account-name>

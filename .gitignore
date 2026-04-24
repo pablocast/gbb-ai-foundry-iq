@@ -1,0 +1,6 @@
+.env
+.venv
+.azure
+.vscode
+__pycache__
+.ipynb_checkpoints

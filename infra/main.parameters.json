@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourcePrefix": {
+      "value": "iqseries"
+    },
+    "location": {
+      "value": "eastus"
+    },
+    "searchServiceSku": {
+      "value": "standard"
+    },
+    "openAiSku": {
+      "value": "S0"
+    },
+    "aiServicesSku": {
+      "value": "S0"
+    },
+    "embeddingModelName": {
+      "value": "text-embedding-3-large"
+    },
+    "embeddingModelVersion": {
+      "value": "1"
+    },
+    "embeddingModelCapacity": {
+      "value": 30
+    },
+    "chatModelName": {
+      "value": "gpt-5.4"
+    },
+    "chatModelVersion": {
+      "value": "2026-03-05"
+    },
+    "chatModelCapacity": {
+      "value": 100
+    },
+    "agenticChatModelName": {
+      "value": "gpt-4.1"
+    },
+    "agenticChatModelVersion": {
+      "value": "2025-04-14"
+    },
+    "agenticChatModelCapacity": {
+      "value": 100
+    },
+    "principalId": {
+      "value": "${AZURE_PRINCIPAL_ID}"
+    }
+  }
+}
