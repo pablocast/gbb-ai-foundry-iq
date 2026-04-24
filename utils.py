@@ -81,6 +81,7 @@ def _reference_label(doc, src_name):
     category = doc.get("ProductCategory")
     product_id = doc.get("ProductID")
     page = doc.get("Page") or doc.get("page")
+    blob_url = doc.get("BlobURL") or doc.get("blob_url")
 
     if name and category and product_id and page:
         return f"{name} - {category} ({product_id}, Page {page})"
@@ -88,8 +89,8 @@ def _reference_label(doc, src_name):
         return f"{name} - {category} ({product_id})"
     if name and category:
         return f"{name} - {category}"
-    if name and page:
-        return f"{name} (Page {page})"
+    if name and page and blob_url:
+        return f"{name} (Page {page}) - [Link]({blob_url})"
     if name:
         return str(name)
     return f"{src_name} result"
