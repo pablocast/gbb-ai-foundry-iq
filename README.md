@@ -20,7 +20,83 @@ Learn how to create an intelligent, MCP-enabled solution that integrates Azure A
 | **Foundry Project** | Project for running the IQ Series cookbooks |
 | **AI Search Connection** | Connects the Foundry project to your AI Search service |
 | **RBAC Role Assignments** | Proper permissions for your user + service-to-service access |
+## Deploy Infrastructure to Azure (azd)
 
+This repo ships with a Bicep template under [infra/main.bicep](infra/main.bicep) and an [azure.yaml](azure.yaml) wired to the Azure Developer CLI (`azd`). The flow provisions every resource listed above and writes a ready-to-use `.env` to the repo root via the `postprovision` hook in [infra/scripts/generate_local_env.sh](infra/scripts/generate_local_env.sh) / [infra/scripts/generate_local_env.ps1](infra/scripts/generate_local_env.ps1).
+
+### 1) Install prerequisites
+
+- [Azure Developer CLI (`azd`)](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
+- Azure CLI, signed in to the target tenant: `az login`
+
+### 2) Authenticate `azd`
+
+```bash
+azd auth login
+```
+
+If `azd auth token` fails while `az` works, set `azd` to reuse the Azure CLI session:
+
+```bash
+azd config set auth.useAzCliAuth true
+```
+
+### 3) Initialize an environment
+
+From the repo root:
+
+```bash
+azd env new <env-name>
+azd env set AZURE_SUBSCRIPTION_ID <your-subscription-id>
+azd env set AZURE_LOCATION eastus2
+```
+
+The Bicep parameter `principalId` is bound to `${AZURE_PRINCIPAL_ID}` in [infra/main.parameters.json](infra/main.parameters.json) so RBAC role assignments target your identity. Set it to the object ID of the user or service principal that will run the notebooks:
+
+```bash
+# Current signed-in user
+azd env set AZURE_PRINCIPAL_ID $(az ad signed-in-user show --query id -o tsv)
+```
+
+Optional overrides (defaults shown) — change before `azd up` if you need a different region, prefix, or model setup. They are defined in [infra/main.parameters.json](infra/main.parameters.json):
+
+| Parameter | Default | Notes |
+|-----------|---------|-------|
+| `resourcePrefix` | `iqseries` | Prefix for all resource names |
+| `location` | `eastus` | Use a [region that supports agentic retrieval](https://learn.microsoft.com/azure/search/search-region-support) |
+| `searchServiceSku` | `standard` | Required for semantic + agentic retrieval |
+| `chatModelName` / `chatModelVersion` | `gpt-5.4` / `2026-03-05` | Primary chat model |
+| `agenticChatModelName` / `agenticChatModelVersion` | `gpt-4.1` / `2025-04-14` | Model used for agentic retrieval |
+| `embeddingModelName` | `text-embedding-3-large` | Embedding model |
+
+To override, edit [infra/main.parameters.json](infra/main.parameters.json) directly.
+
+### 4) Provision resources
+
+```bash
+azd provision
+```
+
+This deploys [infra/main.bicep](infra/main.bicep) and, on success, runs the postprovision hook to populate the local `.env` with `SEARCH_ENDPOINT`, `AOAI_ENDPOINT`, `FOUNDRY_PROJECT_ENDPOINT`, `FOUNDRY_PROJECT_RESOURCE_ID`, model deployment names, `USER_ASSIGNED_IDENTITY_RESOURCE_ID`, and `STORAGE_RESOURCE_ID`.
+
+> Use `azd up` instead of `azd provision` if you want the same single-step experience; this repo has no application code to deploy, so both result in the same provisioned state.
+
+### 5) Verify
+
+```bash
+azd env get-values | grep -E "SEARCH_ENDPOINT|AOAI_ENDPOINT|FOUNDRY_PROJECT_ENDPOINT"
+cat .env
+```
+
+You can now jump straight to [Notebook Usage](#notebook-usage-run-in-order) and run notebooks `1 → 4` in order.
+
+### Tear down
+
+```bash
+azd down --purge
+```
+
+`--purge` is required to fully remove the soft-deleted Azure OpenAI / AI Services accounts so the same `resourcePrefix` can be reused.
 ## Using Existing Resources (Skip Infra Deployment)
 
 If your Azure AI Search, AI Services/Foundry project, storage, and model deployments already exist, you can skip infrastructure deployment and run the notebooks directly.
