@@ -169,6 +169,15 @@ Purpose:
 - Creates indexers for both indexes.
 - Includes a page normalization step for manuals chunk documents.
 
+Prerequisite — create blob containers and upload source data:
+
+Before running this notebook, create the following two containers in the storage account provisioned by `azd` (or your existing storage account) and upload the source data:
+
+- `product-manuals` — upload your product manual PDFs / documents here.
+- `product-catalog` — upload your product catalog JSON file(s) here. The catalog indexer is configured with `parsingMode: jsonArray`, so each blob should contain a JSON array of product objects (switch the parameter to `json` if each blob is a single object).
+
+The container names must match `product_manuals_container` and `product_catalog_container` in the notebook configuration cell. The Search service managed identity needs **Storage Blob Data Reader** on the storage account — this is granted automatically when you deploy via `azd provision`.
+
 How to use:
 
 - Run sections `2.1`, `2.2`, and `2.3` to provision data sources, skillsets, and indexers.
